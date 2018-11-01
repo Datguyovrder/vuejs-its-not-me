@@ -22,7 +22,7 @@ export default new Router({
     { path: "/players", name: "players-index", component: PlayersIndex },
 
     { path: "/games", name: "games-index", component: GamesIndex },
-    { path: "/games/:id", redirect: {name: "round"},
+    { path: "/games/:id", redirect: {name: "round"}},
 
     { path: "/round", name: "round", component: Round},
 

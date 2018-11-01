@@ -2,10 +2,10 @@
   <div class="home">
     <h1>Roles</h1>
     <div>
-      <h4>Total Number of Games: {{ games.length }}</h4>
+      <h4>Total Number of Roles: {{ roles.length }}</h4>
     </div>
 
-    <h2 v-for="role in Roles"> {{ role }}</h2>
+    <h2 v-for="role in roles"> Player {{ role.player_id }} Role: {{ role.label }}</h2>
 
   </div>
 </template>
@@ -15,7 +15,7 @@
 
 <script>
 var axios  = require('axios');
-  
+
 export default {
   data: function() {
     return {

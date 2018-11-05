@@ -2,7 +2,7 @@
   <div class="home">
     <h1>Roles</h1>
     <div>
-      <h4>Total Number of Roles: {{ roles.length }}</h4>
+      <h4>Total Number of Roles: {{ roles["roles"].length }}</h4>
     </div>
 
     <h2 v-for="role in roles"> Player {{ role.player_id }} Role: {{ role.label }}</h2>
@@ -24,7 +24,7 @@ export default {
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/roles")
+    .get("http://localhost:3000/api/games/:id")
     .then(function(response) {
       this.roles = response.data;
     }.bind(this));

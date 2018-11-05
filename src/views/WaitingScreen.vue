@@ -1,13 +1,38 @@
 <template>
   <div class="home">
-    <!-- <h1> {{ collection }}</h1> -->
-    <h1>Made it here</h1>
-    <button>Player 1</button><br><br>
-    <button>Player 2</button><br><br>
-    <button>Player 3</button><br><br>
-    <button>Player 4</button><br><br>
-    <router-link to="/games/1/round" tag="button">Begin Game</router-link>
+    <h1> {{ collection }}</h1>
+          
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Select Spot</th>
+          <th>Player Name</th>
+          <th>Start Game</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><button>Player 1</button></td>
+          <td></td>
+          <td><router-link to="/games/1/round" tag="button">Begin Game</router-link></td>
+        </tr>
+        <tr>
+          <td><button>Player 2</button></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><button>Player 3</button></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td><button>Player 4</button></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
+
+
 </template>
 
 <style>

@@ -6,17 +6,17 @@
     </div>
 
     <div class="games-index">
-        <div class="row">
-          <div class="col-md-4" v-for="game in games">
-            <div class="card" style="width: 18rem;">
-              <div class="card-body">
-                <h5 class="card-title">Lobby: {{ game.game_id }}</h5>
-                <router-link class="btn btn-primary" v-bind:to="'/games/' + game.game_id + '/waiting'">Pick Lobby</router-link>
-              </div>
+      <div class="row">
+        <div class="col-md-4" v-for="game in games">
+          <div class="card" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title">Lobby: {{ game.game_id }}</h5>
+              <router-link class="btn btn-primary" v-bind:to="'/games/' + game.game_id + '/waiting'">Pick Lobby</router-link>
             </div>
           </div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 

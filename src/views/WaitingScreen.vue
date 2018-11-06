@@ -1,6 +1,5 @@
 <template>
   <div class="home">
-    <h1> {{ collection }}</h1>
           
     <table class="table table-bordered">
       <thead>
@@ -8,25 +7,15 @@
           <th>Select Spot</th>
           <th>Player Name</th>
           <th>Start Game</th>
+          <th>Ready?</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><button>Player 1</button></td>
-          <td></td>
-          <td><router-link to="/games/1/round" tag="button">Begin Game</router-link></td>
-        </tr>
-        <tr>
-          <td><button>Player 2</button></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td><button>Player 3</button></td>
-          <td></td>
-        </tr>
-        <tr>
-          <td><button>Player 4</button></td>
-          <td></td>
+        <tr v-for="player in collection['players']">
+          <td><button>Player {{ player.id }}</button></td>
+          <td>{{player["name"]}}</td>
+          <td><router-link to="/games/1/round" tag="button" v-if="player.id == 1">Begin Game</router-link></td>
+          <td><button>Now?</button></td>
         </tr>
       </tbody>
     </table>
@@ -49,16 +38,16 @@ export default {
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/games/1")
+    .get("http://localhost:3000/api/games/" + this.$route.params.id)
     .then(response => {
       this.collection = response.data
     })
     .bind(this);
   },
   methods: {
-    assignplayer: function() {
+    // assignplayer: function() {
 
-    }
+    // }
   },
   computed: {}
 };

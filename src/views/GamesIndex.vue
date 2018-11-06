@@ -16,8 +16,11 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
+    </div><br>
+    
+    <button @click="newLobby()">Create Lobby</button>
+</div>
+
 </template>
 
 <style>
@@ -33,14 +36,23 @@ export default {
     };
   },
   created: function() {
-    axios
-    .get("http://localhost:3000/api/games")
-    .then( response => {
-      this.games = response.data
-    })
-    .bind(this);
+    this.updatedGames();
   },
-  methods: {},
+  methods: {
+    updatedGames: function() {
+      axios
+      .get("http://localhost:3000/api/games")
+      .then( response => {
+        this.games = response.data
+      });
+    },
+
+    newLobby: function() {
+      axios
+      .post("http://localhost:3000/api/games")
+      .then(this.updatedGames());
+    }
+  },
   computed: {}
 };
 </script>

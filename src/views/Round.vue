@@ -1,12 +1,9 @@
 <template>
   <div class="home">
-    <h1>Roles</h1>
-    <div>
-      <h4>Total Number of Roles: {{ roles["roles"].length }}</h4>
-    </div>
-
-    <h2 v-for="role in roles"> Player {{ role.player_id }} Role: {{ role.label }}</h2>
-
+    <!-- <h1>everything: {{ everything }}</h1> -->
+    <h1>participations: {{ participations }}</h1>
+    <h1>game round: {{ everything[0]["game_round"][0].game_round }}</h1>
+    <h1>current player: {{everything[0].current_user_name}}</h1>
   </div>
 </template>
 
@@ -19,15 +16,17 @@ var axios  = require('axios');
 export default {
   data: function() {
     return {
-      roles: []
+     everything:[],
+     participations: []
     };
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/games/:id")
-    .then(function(response) {
-      this.roles = response.data;
-    }.bind(this));
+    .get("http://localhost:3000/api/games/" + this.$route.params.id)
+    .then(response => {
+      this.everything.push(response.data)
+      this.participations = this.everything[0].participations
+    });
   },
   methods: {},
   computed: {}

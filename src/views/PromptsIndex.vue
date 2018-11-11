@@ -35,7 +35,7 @@ export default {
     axios
     .get("http://localhost:3000/api/prompts")
     .then( response => {
-      this.prompts = response.data
+      this.prompts = response.data;
     })
     .bind(this);
   },

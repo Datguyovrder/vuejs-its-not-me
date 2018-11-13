@@ -19,7 +19,7 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
-    { path: "/", redirect: {name: "login"}},
+    { path: "/", name: "root", component: GamesIndex },
 
     // { path: "/players", name: "players-index", component: PlayersIndex },
 
@@ -28,7 +28,7 @@ export default new Router({
     { path: "/games", name: "games-index", component: GamesIndex },
     { path: "/games/:id/waiting", name: "waiting-screen", component: WaitingScreen},
     
-    { path: "/games/:id/round", name: "round", component: Round},
+    { path: "/rounds/:id", name: "rounds-show", component: Round},
 
     { path: "/signup", name: "signup", component: Signup },
     { path: "/login", name: "login", component: Login },

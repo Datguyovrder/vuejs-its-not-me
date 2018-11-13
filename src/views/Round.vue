@@ -1,28 +1,47 @@
 <template>
   <div class="home">
-    <!-- <h1>everything: {{ everything }}</h1> -->
-    <h1>participations: {{ participations }}</h1>
-    <h1>round info: {{ round_info }}</h1>
-    <h1>game round: {{ round_info.game_round }}</h1>
-    <h1>current player: {{ current_player_info }}</h1>
+    <div v-for="participation in participations">
+          <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1>
 
-    <h1 v-for="participation in participations">
-      <h4 v-if="((current_player_info == participation.player.role[0].player_id) && (participation.player.role[0].label == 'decoy'))"> {{ round_info.prompt_message }}
-      </h4>
+      <div v-if="((current_player_id == participation.player.id) && (participation.role == 'decoy'))"> 
+        <div class="jumbotron">
+          <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1>
+          <p class="lead">Make it hard for the hider to disguise themselves</p>
+          <hr class="my-4">
+          <p>{{ prompt_message }}</p>
+          <p class="lead">
+            <div class="btn btn-info" v-on:click="nextRoundCheck()">Done</div>
+          </p>
+        </div>
+      </div>
+      <div v-else-if="((current_player_id == participation.player.id) && (participation.role == 'hider'))"> 
+        <div class="jumbotron">
+          <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1>
+          <p class="lead">Uh oh, better hide</p>
+          <hr class="my-4">
+          <p>Try to copy the other decoys</p>
+          Try to copy the other decoys
+          <div class="btn btn-info" v-on:click="nextRoundCheck()" >Done</div>
+        </div>
+      </div>
+      <div v-else-if="((current_player_id == participation.player.id) && (participation.role == 'seeker'))"> 
+        <div class="jumbotron">
+          <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1>
+          <p class="lead">Who do you think is the hider?</p>
+          <hr class="my-4">
 
-      <h4 v-else-if="((current_player_info == participation.player.role[0].player_id) && (participation.player.role[0].label == 'hider'))"> Try to copy the other decoys
-      </h4>
+          <select class="custom-select" v-model="who_is_hider">
+            <option selected="">Open this select menu</option>
+            <option v-for="participation in participations" v-bind:value="participation.player.id">{{participation.player.name}}</option>
+          </select>
 
-      <!-- <h4 v-else> 
-        <h4>Who do you think is the hider?</h4>
-        <input type="number" v-model="who_did_it">
-        <b>{{ whoDoneIt }}</b>
-      </h4> -->
-     <!--  <h4>{{ current_player_info }} is a {{ participation.player.role[0].label }}</h4> -->
-      
-    </h1> 
-    
-
+          <span>selected: {{ who_is_hider }}</span>
+          <button v-on:click="whoDoneIt()" :disabled="one_guess">Guess</button> 
+          <h1>{{ right_or_wrong }}</h1>
+          <button v-on:click="newRound()"></button>
+        </div>      
+      </div>
+    </div> 
   </div>
 </template>
 
@@ -35,46 +54,76 @@ var axios  = require('axios');
 export default {
   data: function() {
     return {
-     everything:[],
+     game_id: 0,
+     prompt_message: "",
      participations: [],
-     hider: [], 
-     current_player_info: [],
+     current_player_id: 0,
+     prompt_message: 0,
      round_info: [],
      score: [],
-     who_did_it: 0
+     who_is_hider: "",
+     right_or_wrong: "",
+     one_guess: false
     };
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/games/" + this.$route.params.id)
+    .get("/api/rounds/" + this.$route.params.id)
     .then(response => {
-      this.everything.push(response.data)
-      this.participations = this.everything[0].participations
-      this.round_info = this.everything[0]["game_round"][0]
-      this.current_player_info = this.everything[0].current_user_id
+      this.game_id = response.data.game_id;
+      this.participations = response.data.participations;
+      this.current_player_id = response.data.current_player_id;
+      this.prompt_message = response.data.prompt_message;
+      this.round_info = response.data.game_round
     });
   },
   methods: {
-    // decoyScreen: function() {
+    newRound: function() {
+      // var params = {
 
-    // },
-    // hiderScreen: function() {
+      // }
 
-    // },
-    // seekerScreen: function() {
+      // axios
 
-    // }
-  },
-  computed: {
-    whoDoneIt: function() {
-      for (var x=0; x<participations.length; x++) {
-        if (who_did_it == participations[x]["player"]["role"][0]["player_id"] && participations[x]["player"]["role"][0]["label"] == "hider"){
-          return "Congrats You Found The Hider"
-        } else {
-          return "Sorry You Guessed Wrongsu"
+      // .then(response) {
+
+      // }
+    },
+    nextRoundCheck: function() {
+      console.log("checked for new round");
+      axios
+      .get("/api/games/" + this.game_id)
+      .then(response => {
+        if (response.data.current_round_id != this.$route.params.id) {
+          this.$router.push({ name: "rounds-show", params: { id: response.data.current_round_id }});
         }
-      }
-    }
-  }
+      });
+    },
+    whoDoneIt: function() {
+      this.right_or_wrong = "Sorry You Guessed Wrongsu";
+
+      this.participations.forEach(participation => {
+        if (participation.player.id == this.who_is_hider && participation.role == 'hider') {
+          this.right_or_wrong = "Congrats You Found The Hider";
+        }
+      });
+
+      this.one_guess = true
+    },
+  },
+  beforeRouteUpdate (to, from, next) {
+    axios
+    .get("/api/rounds/" + to.params.id)
+    .then(response => {
+      this.game_id = response.data.game_id;
+      this.participations = response.data.participations;
+      this.current_player_id = response.data.current_player_id;
+      this.prompt_message = response.data.prompt_message;
+      this.round_info = response.data.game_round
+    });
+
+    next()
+  },
+  computed: {}
 };
 </script>

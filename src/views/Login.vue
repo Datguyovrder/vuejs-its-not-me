@@ -1,6 +1,7 @@
 <template>
   <div class="login">
     <div class="container">
+
       <form v-on:submit.prevent="submit()">
         <h1>Login</h1>
         <ul>
@@ -14,8 +15,8 @@
           <label>Password:</label>
           <input type="password" class="form-control" v-model="password">
         </div>
-        <input type="submit" class="btn btn-primary" value="Submit">
-        <router-link to="/signup" tag="button">Register Account</router-link>
+        <input type="submit" class="btn btn-info" value="Submit">
+        <router-link to="/signup" tag="button" class="btn btn-warning  float-right">Register Account</router-link>
       </form>
     </div>
   </div>
@@ -40,11 +41,12 @@ export default {
         password: this.password
       };
       axios
-        .post("http://localhost:3000/api/sessions", params)
+        .post("/api/sessions", params)
         .then(response => {
           axios.defaults.headers.common["Authorization"] =
             "Bearer " + response.data.jwt;
           localStorage.setItem("jwt", response.data.jwt);
+          
           this.$router.push("/games/");
         })
         .catch(error => {

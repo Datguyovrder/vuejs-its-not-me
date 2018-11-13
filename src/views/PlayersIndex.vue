@@ -30,7 +30,7 @@ export default {
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/players")
+    .get("/api/players")
     .then(function(response) {
       this.players = response.data;
     }.bind(this));

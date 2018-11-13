@@ -22,8 +22,8 @@
           <label>Password confirmation:</label>
           <input type="password" class="form-control" v-model="passwordConfirmation">
         </div>
-        <input type="submit" class="btn btn-primary" value="Submit">
-        <router-link to="/login" tag="button">Back To Login</router-link>
+        <input type="submit" class="btn btn-info" value="Submit">
+        <router-link to="/login" tag="button" class="btn btn-warning float-right">Back To Login</router-link>
       </form>
     </div>
   </div>
@@ -51,7 +51,7 @@ export default {
         password_confirmation: this.passwordConfirmation
       };
       axios
-        .post("http://localhost:3000/api/players", params)
+        .post("/api/players", params)
         .then(response => {
           this.$router.push("/login");
         })

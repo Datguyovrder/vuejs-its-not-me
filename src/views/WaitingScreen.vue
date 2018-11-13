@@ -1,37 +1,46 @@
 <template>
   <div class="home">
-
-    <!-- <h1>everything: {{ everything }}</h1> -->
-    <h1>participations {{ participations }}</h1>
-    <h1>players: {{ participations.length }}</h1>
+    <!-- <h1>participations {{ participations }}</h1>
+    <h1>players: {{ participations.length }}</h1> -->
     <!-- <h1>roles: {{ participations}}</h1> -->
     <!-- <h1>game round: {{ everything["game_round"][0].game_round}}</h1> -->
-    <button v-on:click="submit()">Join Lobby</button>
-          
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Select Spot</th>
-          <th>Player Name</th>
-          <th>Start Game</th>
-          <th>Ready?</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="participation in participations">
-          <td>Player {{ participation.player.id }}</td>
-          <td>{{participation.player["name"]}}</td>
-          <td><router-link v-bind:to="'/games/' + everything.id + '/round'" tag="button" v-if="participation.player.name == everything.participations[0].player.name && everything.participations.length > 3">Begin Game</router-link></td>
-          <td><button v-on:click="readyYet()">Now?</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="button-spacer row justify-content-md-cewnter">
+      <div class="col-md-5">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Player Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="participation in participations">
+              <td>{{participation.player["name"]}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-5">
+        <div class="button-spacer" v-if="!isParticipant()">
+          <button v-on:click="submit()" class="btn btn-info">Join Lobby</button>
+        </div>
+        <div class="button-spacer" v-else-if="everything.organizer_id === everything.current_user_id && everything.participations.length > 3 && !everything.started">
+          <div v-on:click="beginGame()" class="btn btn-info" >Begin Game</div>
+        </div>
+        <div class="button-spacer" v-if="isParticipant()">
+          <button v-on:click="readyYet()" class="btn btn-info">Now?</button>
+        </div>
+      </div>
+    </div>
+    </div>
+    
 
 
 </template>
 
 <style>
+.button-spacer {
+  margin-bottom: 20px;
+}
 </style>
 
 <script>
@@ -40,16 +49,16 @@ var axios = require('axios')
 export default {
   data: function() {
     return {
-      everything: [],
+      everything: {participations:[]},
       participations: []
     };
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/games/" + this.$route.params.id)
+    .get("/api/games/" + this.$route.params.id)
     .then(response => {
       this.everything = response.data;
-      this.participations = this.everything.participations
+      this.participations = this.everything.participations;
     });
   },
   methods: {
@@ -61,7 +70,7 @@ export default {
       };
 
       axios
-      .post("http://localhost:3000/api/participations/", params)
+      .post("/api/participations/", params)
       .then(response => {
         console.log(response.data);
         // this.$router.push("/games/43/waiting");
@@ -77,15 +86,38 @@ export default {
     };
 
     axios
-    .post("http://localhost:3000/api/games/" + this.$route.params.id + "/rounds", params)
+    .post("/api/games/" + this.$route.params.id + "/rounds", params)
     .then(response => {
       this.everything.push(response.data)
     });
     },
     readyYet: function() {
-      if (players.length != 4) {
-        this.$router.go();
-      }
+      axios
+      .get("/api/games/" + this.$route.params.id)
+      .then(response => {
+        this.everything = response.data;
+        this.participations = this.everything.participations;
+        if (response.data.started) {
+          this.$router.push('/rounds/' + this.everything.current_round_id);
+        }
+      });
+    },
+    beginGame: function() {
+      axios
+      .post("/api/games/" + this.everything.id + "/start")
+      .then(response => {
+        this.$router.push('/rounds/' + response.data.current_round_id);
+      });
+    },
+    isParticipant: function() {
+      var inParticipations = false;
+      this.everything.participations.forEach(participation => {
+        if (participation.player.id === this.everything.current_user_id) {
+          inParticipations = true;
+        }
+      });
+
+      return inParticipations;
     }
   },
   computed: {}

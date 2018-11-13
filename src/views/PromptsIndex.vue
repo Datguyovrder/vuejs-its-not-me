@@ -33,7 +33,7 @@ export default {
   },
   created: function() {
     axios
-    .get("http://localhost:3000/api/prompts")
+    .get("/api/prompts")
     .then( response => {
       this.prompts = response.data;
     })

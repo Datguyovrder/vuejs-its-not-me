@@ -1,5 +1,5 @@
 <template>
-  <div class="home">                                                                                                                                                                                                                                                                              
+  <div class="home">                                                    
     <h1>Game Lobbies</h1>
     <div>
       <h4>Total Number of Games: {{ games.length }}</h4>
@@ -7,7 +7,7 @@
 
     <div class="games-index">
       <div class="row">
-        <div class="col-md-4" v-for="game in games">
+        <div class="col-md-4 offset-md-0 col-8 offset-1 game-card" v-for="game in games">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
               <h5 class="card-title">Lobby: {{ game.id }}</h5>
@@ -18,13 +18,15 @@
       </div>
     </div><br>
     
-    <button @click="newLobby()">Create Lobby</button>
-    <router-link to="/logout" tag="button">Logout</router-link>
+    <button @click="newLobby()" class="btn btn-info">Create Lobby</button>
 </div>
 
 </template>
 
 <style>
+.game-card {
+  margin-bottom: 20px;
+}
 </style>
 
 <script>
@@ -42,7 +44,7 @@ export default {
   methods: {
     updatedGames: function() {
       axios
-      .get("http://localhost:3000/api/games")
+      .get("/api/games")
       .then( response => {
         this.games = response.data;
       });
@@ -50,7 +52,7 @@ export default {
 
     newLobby: function() {
       axios
-      .post("http://localhost:3000/api/games")
+      .post("/api/games")
       .then(response => {
         console.log(response.data);
         this.$router.push({name: "waiting-screen", params: {id: response.data["id"]}});

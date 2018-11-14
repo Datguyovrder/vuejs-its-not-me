@@ -4,7 +4,8 @@
     <h1>players: {{ participations.length }}</h1> -->
     <!-- <h1>roles: {{ participations}}</h1> -->
     <!-- <h1>game round: {{ everything["game_round"][0].game_round}}</h1> -->
-    <div class="button-spacer row justify-content-md-cewnter">
+    <span class="hal-9000 d-block mx-auto mb-4 mt-3"></span>
+    <div class="button-spacer row justify-content-md-center">
       <div class="col-md-5">
         <table class="table table-bordered">
           <thead>
@@ -49,8 +50,8 @@ var axios = require('axios')
 export default {
   data: function() {
     return {
-      everything: {participations:[]},
-      participations: []
+      everything: {participations:[{player: {}}]},
+      participations: [{player: {}}]
     };
   },
   created: function() {
@@ -65,7 +66,7 @@ export default {
     submit: function() {
       var params = {
         game_id: this.everything.id,
-        player_id: this.everything["participations"][0]["player"].id,
+        // player_id: this.everything["participations"][0]["player"].id,
         organizer: this.false
       };
 

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <div v-for="participation in participations">
-          <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1>
+          <!-- <h1 class="display-3">{{ participation.player.name }}, You are a {{ participation.role }}</h1> -->
 
       <div v-if="((current_player_id == participation.player.id) && (participation.role == 'decoy'))"> 
         <div class="jumbotron">
@@ -20,7 +20,6 @@
           <p class="lead">Uh oh, better hide</p>
           <hr class="my-4">
           <p>Try to copy the other decoys</p>
-          Try to copy the other decoys
           <div class="btn btn-info" v-on:click="nextRoundCheck()" >Done</div>
         </div>
       </div>
@@ -35,10 +34,9 @@
             <option v-for="participation in participations" v-bind:value="participation.player.id">{{participation.player.name}}</option>
           </select>
 
-          <span>selected: {{ who_is_hider }}</span>
-          <button v-on:click="whoDoneIt()" :disabled="one_guess">Guess</button> 
+          <button class="btn btn-info" v-on:click="whoDoneIt()" :disabled="one_guess">Guess</button> 
           <h1>{{ right_or_wrong }}</h1>
-          <button v-on:click="newRound()"></button>
+          <button class="btn btn-primary" v-on:click="newRound()" :disabled="!one_guess">Start Next Roundo</button>
         </div>      
       </div>
     </div> 
@@ -79,15 +77,11 @@ export default {
   },
   methods: {
     newRound: function() {
-      // var params = {
-
-      // }
-
-      // axios
-
-      // .then(response) {
-
-      // }
+      axios
+      .post("/api/games/" + this.game_id + "/rounds")
+      .then(response => {
+        this.$router.push('/rounds/' + response.data.id);
+      });
     },
     nextRoundCheck: function() {
       console.log("checked for new round");
